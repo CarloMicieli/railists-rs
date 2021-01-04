@@ -1,0 +1,21 @@
+[package]
+name = "railists"
+version = "0.1.0"
+authors = ["CarloMicieli <piovarolo@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0.37"
+thiserror = "1.0.23"
+serde = { version = "1.0.118", features = ["derive"] }
+serde_derive = "1.0.118"
+serde_yaml = "0.8"
+clap = "2.33.3"
+pretty_env_logger = "0.4.0"
+log = "0.4.11"
+prettytable-rs = "0.8.0"
+csv = "1.1.5"
+chrono = "0.4.19"
+bigdecimal = "0.2.0"
+itertools = "0.10.0"
+heck = "0.3.2"
