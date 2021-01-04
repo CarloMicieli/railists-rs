@@ -1,5 +1,7 @@
 # RaiLists.rs
 
+![Rust](https://github.com/CarloMicieli/railists-rs/workflows/Rust/badge.svg)
+
 A small CLI to manage model railways collection (from yaml files).
 
 ## How to build it
@@ -63,7 +65,7 @@ $ railists collection list -f lista.yaml
 +-----+-------------+-------------+-------+----+------+----------------------------------------------------+-------+------------+------------+---------------------+
 ```
 
-`collection list` will display the statistics for the current collection:
+`collection stats` will display the statistics for the current collection:
 
 ```
 $ railists collection stats -f lista.yaml
