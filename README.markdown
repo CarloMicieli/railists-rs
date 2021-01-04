@@ -48,6 +48,8 @@ SUBCOMMANDS:
     stats    Calculate the collection statistics
 ```
 
+`collection list` will list all elements in the current collection:
+
 ```
 $ railists collection list -f lista.yaml
 +-----+-------------+-------------+-------+----+------+----------------------------------------------------+-------+------------+------------+---------------------+
@@ -60,6 +62,8 @@ $ railists collection list -f lista.yaml
 | 3   | ACME        | 40241       | H0    | DC |  F   | Carro chiuso FS tipo Ghkrs a passo lungo con 12... |     1 | 2019-01-08 |  29.90 EUR | Tecnomodel          |
 +-----+-------------+-------------+-------+----+------+----------------------------------------------------+-------+------------+------------+---------------------+
 ```
+
+`collection list` will display the statistics for the current collection:
 
 ```
 $ railists collection stats -f lista.yaml
@@ -75,6 +79,8 @@ Rolling stocks/sets... 999
 | TOTAL |                 3 |          99999.99 |            0 |            0 |                   34 |              1100.00 |                  6 |              62.50 |          35 |    99999.99 |
 +-------+-------------------+-------------------+--------------+--------------+----------------------+----------------------+--------------------+--------------------+-------------+-------------+
 ```
+
+`collection depot` will display the list of locomotives in the current collection:
 
 ```
 $ railists collection depot -f lista.yaml
