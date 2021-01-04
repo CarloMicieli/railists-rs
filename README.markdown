@@ -1,5 +1,7 @@
 # RaiLists.rs
 
+![Rust](https://github.com/CarloMicieli/railists-rs/workflows/Rust/badge.svg)
+
 A small CLI to manage model railways collection (from yaml files).
 
 ## How to build it
