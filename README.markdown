@@ -63,7 +63,7 @@ $ railists collection list -f lista.yaml
 +-----+-------------+-------------+-------+----+------+----------------------------------------------------+-------+------------+------------+---------------------+
 ```
 
-`collection list` will display the statistics for the current collection:
+`collection stats` will display the statistics for the current collection:
 
 ```
 $ railists collection stats -f lista.yaml
