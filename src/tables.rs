@@ -26,11 +26,18 @@ impl AsTable for WishList {
             "Scale",
             "PM",
             "Description",
-            "Count"
+            "Count",
+            "Price range",
         ]);
 
         for (ind, it) in self.get_items().iter().enumerate() {
             let ci = it.catalog_item();
+
+            let price_range = if let Some((min, max)) = it.price_range() {
+                format!("from {} to {}", min.price(), max.price())
+            } else {
+                String::from("-")
+            };
 
             table.add_row(row![
                 ind + 1,
@@ -42,6 +49,7 @@ impl AsTable for WishList {
                 ci.power_method(),
                 i -> substring(ci.description()),
                 r -> ci.count(),
+                c -> price_range,
             ]);
         }
 

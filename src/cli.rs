@@ -51,9 +51,15 @@ pub fn get_matches() -> ArgMatches<'static> {
         .arg(file_arg.clone())
         .about("List the wishlist elements");
 
+    let wishlist_budget_subcommand = SubCommand::with_name("budget")
+        .alias("b")
+        .arg(file_arg.clone())
+        .about("Calculate the wishlist required budget");
+
     let wishlist_subcommand = SubCommand::with_name("wishlist")
         .alias("w")
         .subcommand(wishlist_ls_subcommand)
+        .subcommand(wishlist_budget_subcommand)
         .about("Manage model railway wishlist");
 
     // let migrate_subcommand = SubCommand::with_name("migrate")

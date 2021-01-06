@@ -5,7 +5,10 @@ use crate::domain::{
         rolling_stocks::RollingStock,
         scales::Scale,
     },
-    collecting::wish_lists::{Priority, WishList, WishListItem},
+    collecting::{
+        wish_lists::{PriceInfo, Priority, WishList, WishListItem},
+        Price,
+    },
 };
 
 use super::yaml_rolling_stocks::YamlRollingStock;
@@ -34,6 +37,14 @@ pub struct YamlWishListItem {
     pub priority: Option<String>,
     #[serde(rename = "rollingStocks")]
     pub rolling_stocks: Vec<YamlRollingStock>,
+    #[serde(default = "Vec::new")]
+    pub prices: Vec<YamlPrice>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct YamlPrice {
+    pub shop: String,
+    pub price: String,
 }
 
 impl YamlWishList {
@@ -41,6 +52,14 @@ impl YamlWishList {
         let mut wish_list = WishList::new(&self.name, self.version);
 
         for item in self.elements {
+            let mut prices: Vec<PriceInfo> = Vec::new();
+
+            for p in item.prices.iter() {
+                let price = p.price.parse::<Price>().unwrap();
+                let pi = PriceInfo::new(&p.shop, price);
+                prices.push(pi);
+            }
+
             let priority = if let Some(p) = item.priority.clone() {
                 p.parse::<Priority>()?
             } else {
@@ -48,7 +67,7 @@ impl YamlWishList {
             };
             let catalog_item = Self::parse_catalog_item(item)?;
 
-            wish_list.add_item(catalog_item, priority);
+            wish_list.add_item(catalog_item, priority, prices);
         }
 
         Ok(wish_list)

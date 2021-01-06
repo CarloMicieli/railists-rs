@@ -5,7 +5,7 @@ use rust_decimal::prelude::*;
 use std::fmt;
 use std::str;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Clone)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct Price {
     amount: Decimal,
     currency: String,

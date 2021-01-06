@@ -17,7 +17,10 @@ mod tables;
 
 use csv;
 use data_source::DataSource;
-use domain::collecting::collections::{Collection, CollectionStats, Depot};
+use domain::collecting::{
+    collections::{Collection, CollectionStats, Depot},
+    wish_lists::{Priority, WishListBudget},
+};
 use tables::AsTable;
 
 fn main() {
@@ -104,6 +107,31 @@ fn main() {
 
                 let table = wish_list.to_table();
                 table.printstd();
+            }
+            ("budget", Some(subc_args)) => {
+                let filename = subc_args
+                    .value_of("file")
+                    .expect("wishlist file is required");
+
+                let data_source = DataSource::new(filename);
+                let wish_list = data_source
+                    .wish_list()
+                    .expect("Unable to load the wishlist");
+
+                let budget = WishListBudget::from_wish_list(&wish_list);
+
+                println!(
+                    "High...... {} EUR",
+                    budget.by_priority(Priority::High)
+                );
+                println!(
+                    "Normal.... {} EUR",
+                    budget.by_priority(Priority::Normal)
+                );
+                println!(
+                    "Low....... {} EUR",
+                    budget.by_priority(Priority::Low)
+                );
             }
             _ => {}
         },
