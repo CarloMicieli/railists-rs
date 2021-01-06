@@ -1,7 +1,7 @@
 use crate::domain::{
     catalog::{
         brands::Brand,
-        catalog_items::{CatalogItem, ItemNumber, PowerMethod},
+        catalog_items::{CatalogItem, DeliveryDate, ItemNumber, PowerMethod},
         rolling_stocks::RollingStock,
         scales::Scale,
     },
@@ -28,6 +28,8 @@ pub struct YamlWishListItem {
     #[serde(rename = "powerMethod")]
     pub power_method: String,
     pub scale: String,
+    #[serde(rename = "deliveryDate")]
+    pub delivery_date: Option<String>,
     pub count: u8,
     #[serde(rename = "rollingStocks")]
     pub rolling_stocks: Vec<YamlRollingStock>,
@@ -54,6 +56,11 @@ impl YamlWishList {
             rolling_stocks.push(rolling_stock);
         }
 
+        let mut delivery_date = None;
+        if let Some(dd) = elem.delivery_date {
+            delivery_date = Some(dd.parse::<DeliveryDate>()?);
+        }
+
         let catalog_item = CatalogItem::new(
             Brand::new(&elem.brand),
             ItemNumber::new(&elem.item_number).expect("Invalid item number"),
@@ -63,6 +70,7 @@ impl YamlWishList {
                 .parse::<PowerMethod>()
                 .expect("Invalid power method"),
             Scale::from_name(&elem.scale).unwrap(),
+            delivery_date,
             elem.count,
         );
 

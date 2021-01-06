@@ -41,7 +41,7 @@ impl fmt::Display for ItemNumber {
 pub type Quarter = u8;
 pub type Year = i32;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum DeliveryDate {
     ByYear(Year),
     ByQuarter(Year, Quarter),
@@ -73,7 +73,9 @@ impl DeliveryDate {
     }
 
     fn parse_year(s: &str) -> Result<Year, DeliveryDateParseError> {
-        let year = s.parse::<Year>().map_err(|_| DeliveryDateParseError::InvalidYearValue)?;
+        let year = s
+            .parse::<Year>()
+            .map_err(|_| DeliveryDateParseError::InvalidYearValue)?;
         if year < 1900 && year >= 2999 {
             return Err(DeliveryDateParseError::InvalidYearValue);
         }
@@ -86,7 +88,9 @@ impl DeliveryDate {
             return Err(DeliveryDateParseError::InvalidQuarterValue);
         }
 
-        let quarter = s[1..].parse::<Quarter>().map_err(|_| DeliveryDateParseError::InvalidQuarterValue)?;
+        let quarter = s[1..]
+            .parse::<Quarter>()
+            .map_err(|_| DeliveryDateParseError::InvalidQuarterValue)?;
         if quarter < 1 && quarter >= 4 {
             return Err(DeliveryDateParseError::InvalidQuarterValue);
         }
@@ -180,6 +184,7 @@ pub struct CatalogItem {
     category: Category,
     scale: Scale,
     power_method: PowerMethod,
+    delivery_date: Option<DeliveryDate>,
     count: u8,
 }
 
@@ -216,6 +221,7 @@ impl CatalogItem {
         rolling_stocks: Vec<RollingStock>,
         power_method: PowerMethod,
         scale: Scale,
+        delivery_date: Option<DeliveryDate>,
         count: u8,
     ) -> Self {
         let category = Self::extract_category(&rolling_stocks);
@@ -226,6 +232,7 @@ impl CatalogItem {
             rolling_stocks,
             category,
             count,
+            delivery_date,
             power_method,
             scale,
         }
@@ -267,6 +274,10 @@ impl CatalogItem {
 
     pub fn power_method(&self) -> PowerMethod {
         self.power_method
+    }
+
+    pub fn delivery_date(&self) -> &Option<DeliveryDate> {
+        &self.delivery_date
     }
 
     fn extract_category(rolling_stocks: &Vec<RollingStock>) -> Category {
@@ -436,6 +447,7 @@ mod tests {
                 vec![new_locomotive()],
                 PowerMethod::DC,
                 Scale::from_name("H0").unwrap(),
+                None,
                 1,
             )
         }
@@ -448,6 +460,7 @@ mod tests {
                 vec![new_passenger_car(), new_passenger_car()],
                 PowerMethod::DC,
                 Scale::from_name("H0").unwrap(),
+                None,
                 2,
             )
         }
@@ -464,6 +477,7 @@ mod tests {
                 ],
                 PowerMethod::DC,
                 Scale::from_name("H0").unwrap(),
+                None,
                 2,
             )
         }
@@ -477,6 +491,7 @@ mod tests {
                 vec![new_locomotive()],
                 PowerMethod::DC,
                 Scale::from_name("H0").unwrap(),
+                Some(DeliveryDate::by_year(2020)),
                 1,
             );
 
@@ -486,6 +501,10 @@ mod tests {
             assert_eq!(&vec![new_locomotive()], item.rolling_stocks());
             assert_eq!(PowerMethod::DC, item.power_method());
             assert_eq!(&Scale::from_name("H0").unwrap(), item.scale());
+            assert_eq!(
+                &Some(DeliveryDate::by_year(2020)),
+                item.delivery_date()
+            );
             assert_eq!(1, item.count());
         }
 
