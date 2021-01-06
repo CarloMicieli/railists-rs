@@ -3,9 +3,9 @@ use crate::domain::catalog::{
 };
 use crate::domain::catalog::{catalog_items::ItemNumber, categories::Category};
 
-use bigdecimal::{self, BigDecimal};
 use chrono::{Datelike, NaiveDate, NaiveDateTime, Utc};
 use prettytable::Table;
+use rust_decimal::prelude::*;
 use std::{cmp, collections::HashMap, fmt, ops, str};
 
 use crate::domain::catalog::rolling_stocks::DccInterface;
@@ -349,7 +349,7 @@ impl cmp::Ord for DepotCard {
 
 #[derive(Debug, PartialEq)]
 pub struct CollectionStats {
-    total_value: BigDecimal,
+    total_value: Decimal,
     size: usize,
     values_by_year: Vec<YearlyCollectionStats>,
     totals: StatisticsTotals,
@@ -389,8 +389,8 @@ impl CollectionStats {
     }
 
     /// The total value of this collection
-    pub fn total_value(&self) -> &BigDecimal {
-        &self.total_value
+    pub fn total_value(&self) -> Decimal {
+        self.total_value
     }
 
     /// The number of items included in this collection.
@@ -407,32 +407,32 @@ impl CollectionStats {
         self.totals.number_of_locomotives
     }
 
-    pub fn locomotives_value(&self) -> &BigDecimal {
-        &self.totals.locomotives_value
+    pub fn locomotives_value(&self) -> Decimal {
+        self.totals.locomotives_value
     }
 
     pub fn number_of_passenger_cars(&self) -> u8 {
         self.totals.number_of_passenger_cars
     }
 
-    pub fn passenger_cars_value(&self) -> &BigDecimal {
-        &self.totals.passenger_cars_value
+    pub fn passenger_cars_value(&self) -> Decimal {
+        self.totals.passenger_cars_value
     }
 
     pub fn number_of_freight_cars(&self) -> u8 {
         self.totals.number_of_freight_cars
     }
 
-    pub fn freight_cars_value(&self) -> &BigDecimal {
-        &self.totals.freight_cars_value
+    pub fn freight_cars_value(&self) -> Decimal {
+        self.totals.freight_cars_value
     }
 
     pub fn number_of_trains(&self) -> u8 {
         self.totals.number_of_trains
     }
 
-    pub fn trains_value(&self) -> &BigDecimal {
-        &self.totals.trains_value
+    pub fn trains_value(&self) -> Decimal {
+        self.totals.trains_value
     }
 
     pub fn number_of_rolling_stocks(&self) -> u16 {
@@ -445,16 +445,16 @@ pub type Year = i32;
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct YearlyCollectionStats {
     year: Year,
-    locomotives: (u8, BigDecimal),
-    passenger_cars: (u8, BigDecimal),
-    freight_cars: (u8, BigDecimal),
-    trains: (u8, BigDecimal),
-    total: (u8, BigDecimal),
+    locomotives: (u8, Decimal),
+    passenger_cars: (u8, Decimal),
+    freight_cars: (u8, Decimal),
+    trains: (u8, Decimal),
+    total: (u8, Decimal),
 }
 
 impl YearlyCollectionStats {
     pub fn new(year: Year) -> Self {
-        let zero: BigDecimal = BigDecimal::from(0);
+        let zero: Decimal = Decimal::from(0);
 
         YearlyCollectionStats {
             year,
@@ -492,8 +492,8 @@ impl YearlyCollectionStats {
         c
     }
 
-    pub fn locomotives_value(&self) -> &BigDecimal {
-        let (_, v) = &self.locomotives;
+    pub fn locomotives_value(&self) -> Decimal {
+        let (_, v) = self.locomotives;
         v
     }
 
@@ -502,8 +502,8 @@ impl YearlyCollectionStats {
         c
     }
 
-    pub fn passenger_cars_value(&self) -> &BigDecimal {
-        let (_, v) = &self.passenger_cars;
+    pub fn passenger_cars_value(&self) -> Decimal {
+        let (_, v) = self.passenger_cars;
         v
     }
 
@@ -512,8 +512,8 @@ impl YearlyCollectionStats {
         c
     }
 
-    pub fn freight_cars_value(&self) -> &BigDecimal {
-        let (_, v) = &self.freight_cars;
+    pub fn freight_cars_value(&self) -> Decimal {
+        let (_, v) = self.freight_cars;
         v
     }
 
@@ -522,8 +522,8 @@ impl YearlyCollectionStats {
         c
     }
 
-    pub fn trains_value(&self) -> &BigDecimal {
-        let (_, v) = &self.trains;
+    pub fn trains_value(&self) -> Decimal {
+        let (_, v) = self.trains;
         v
     }
 
@@ -532,8 +532,8 @@ impl YearlyCollectionStats {
         c
     }
 
-    pub fn total_value(&self) -> &BigDecimal {
-        let (_, v) = &self.total;
+    pub fn total_value(&self) -> Decimal {
+        let (_, v) = self.total;
         v
     }
 
@@ -593,30 +593,30 @@ impl cmp::Ord for YearlyCollectionStats {
 #[derive(Debug, PartialEq)]
 pub struct StatisticsTotals {
     number_of_locomotives: u8,
-    locomotives_value: BigDecimal,
+    locomotives_value: Decimal,
     number_of_trains: u8,
-    trains_value: BigDecimal,
+    trains_value: Decimal,
     number_of_passenger_cars: u8,
-    passenger_cars_value: BigDecimal,
+    passenger_cars_value: Decimal,
     number_of_freight_cars: u8,
-    freight_cars_value: BigDecimal,
+    freight_cars_value: Decimal,
     number_of_rolling_stocks: u16,
-    total_value: BigDecimal,
+    total_value: Decimal,
 }
 
 impl StatisticsTotals {
     pub fn new() -> Self {
         StatisticsTotals {
             number_of_locomotives: 0u8,
-            locomotives_value: BigDecimal::from(0),
+            locomotives_value: Decimal::from(0),
             number_of_trains: 0u8,
-            trains_value: BigDecimal::from(0),
+            trains_value: Decimal::from(0),
             number_of_passenger_cars: 0u8,
-            passenger_cars_value: BigDecimal::from(0),
+            passenger_cars_value: Decimal::from(0),
             number_of_freight_cars: 0u8,
-            freight_cars_value: BigDecimal::from(0),
+            freight_cars_value: Decimal::from(0),
             number_of_rolling_stocks: 0u16,
-            total_value: BigDecimal::from(0),
+            total_value: Decimal::from(0),
         }
     }
 

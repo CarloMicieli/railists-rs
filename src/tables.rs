@@ -1,5 +1,5 @@
-use bigdecimal::BigDecimal;
 use prettytable::{table, Table};
+use rust_decimal::prelude::*;
 
 use crate::domain::collecting::collections::{
     Collection, CollectionStats, Depot, Year, YearlyCollectionStats,

@@ -4,7 +4,8 @@ use std::fmt;
 use std::str;
 
 use crate::domain::catalog::{
-    brands::Brand, categories::Category, rolling_stocks::RollingStock, scales::Scale
+    brands::Brand, categories::Category, rolling_stocks::RollingStock,
+    scales::Scale,
 };
 
 use super::rolling_stocks::Epoch;

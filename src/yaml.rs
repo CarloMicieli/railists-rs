@@ -7,10 +7,10 @@ use crate::domain::catalog::categories::{
     FreightCarType, LocomotiveType, PassengerCarType, TrainType,
 };
 use crate::domain::catalog::railways::Railway;
-use crate::domain::catalog::scales::Scale;
 use crate::domain::catalog::rolling_stocks::{
     Control, DccInterface, Epoch, LengthOverBuffer, RollingStock, ServiceLevel,
 };
+use crate::domain::catalog::scales::Scale;
 use crate::domain::catalog::{brands::Brand, catalog_items::PowerMethod};
 use crate::domain::collecting::collections::{
     Collection, CollectionItem, PurchasedInfo,

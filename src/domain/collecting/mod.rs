@@ -1,18 +1,18 @@
 pub mod collections;
 pub mod wish_lists;
 
-use bigdecimal::BigDecimal;
+use rust_decimal::prelude::*;
 use std::fmt;
 use std::str;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Clone)]
 pub struct Price {
-    amount: BigDecimal,
+    amount: Decimal,
     currency: String,
 }
 
 impl Price {
-    pub fn euro(amount: BigDecimal) -> Self {
+    pub fn euro(amount: Decimal) -> Self {
         Price {
             amount,
             currency: "EUR".to_owned(),
@@ -32,7 +32,7 @@ impl str::FromStr for Price {
         let amount = it
             .next()
             .map(|s| s.replace(",", "."))
-            .map(|amount| BigDecimal::from_str(&amount))
+            .map(|amount| Decimal::from_str(&amount))
             .unwrap();
 
         Ok(Price {

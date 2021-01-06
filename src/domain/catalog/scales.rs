@@ -1,6 +1,6 @@
 use rust_decimal::prelude::*;
-use std::fmt;
 use std::cmp;
+use std::fmt;
 
 /// In rail transport, track gauge or track gage is the spacing of the rails on a
 /// railway track and is measured between the inner faces of the load-bearing rails.
@@ -31,7 +31,12 @@ pub struct Scale {
 
 impl Scale {
     /// Creates a new scale
-    pub fn new(name: &str, ratio: Decimal, gauge_mm: Option<Decimal>, track_gauge: TrackGauge) -> Self {
+    pub fn new(
+        name: &str,
+        ratio: Decimal,
+        gauge_mm: Option<Decimal>,
+        track_gauge: TrackGauge,
+    ) -> Self {
         Scale {
             name: name.to_owned(),
             ratio,
@@ -44,7 +49,7 @@ impl Scale {
         match name {
             "H0" => Some(Scale::H0()),
             "N" => Some(Scale::N()),
-            _ => None
+            _ => None,
         }
     }
 
@@ -57,7 +62,7 @@ impl Scale {
     pub fn ratio(&self) -> Decimal {
         self.ratio
     }
- 
+
     /// Returns this scale gauge (distance between rails)
     pub fn gauge(&self) -> Option<Decimal> {
         self.gauge_mm
@@ -71,14 +76,14 @@ impl Scale {
     #[allow(non_snake_case)]
     pub fn H0() -> Scale {
         let ratio = Decimal::new(87, 0);
-        let gauge =  Decimal::new(165, 1);
+        let gauge = Decimal::new(165, 1);
         Scale::new("H0", ratio, Some(gauge), TrackGauge::Standard)
     }
 
     #[allow(non_snake_case)]
     pub fn N() -> Scale {
         let ratio = Decimal::new(160, 0);
-        let gauge =  Decimal::new(9, 0);
+        let gauge = Decimal::new(9, 0);
         Scale::new("N", ratio, Some(gauge), TrackGauge::Standard)
     }
 }
@@ -88,15 +93,14 @@ impl fmt::Display for Scale {
         write!(f, "{} (1:{})", self.name, self.ratio)
     }
 }
- 
+
 impl cmp::PartialEq for Scale {
     fn eq(&self, other: &Self) -> bool {
         self.name() == &other.name
     }
 }
 
-impl cmp::Eq for Scale {
-}
+impl cmp::Eq for Scale {}
 
 #[cfg(test)]
 mod tests {
@@ -108,9 +112,10 @@ mod tests {
         #[test]
         fn it_should_create_new_scales() {
             let ratio = Decimal::new(87, 0);
-            let gauge =  Decimal::new(165, 1);
+            let gauge = Decimal::new(165, 1);
 
-            let scale_h0 = Scale::new("H0", ratio, Some(gauge), TrackGauge::Standard);
+            let scale_h0 =
+                Scale::new("H0", ratio, Some(gauge), TrackGauge::Standard);
             assert_eq!("H0", scale_h0.name());
             assert_eq!(ratio, scale_h0.ratio());
             assert_eq!(Some(gauge), scale_h0.gauge());
