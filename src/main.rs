@@ -7,13 +7,16 @@ extern crate log;
 extern crate serde_derive;
 #[macro_use]
 extern crate prettytable;
+#[macro_use]
+extern crate anyhow;
 
 mod cli;
+mod data_source;
 mod domain;
 mod tables;
-mod yaml;
 
 use csv;
+use data_source::DataSource;
 use domain::collecting::collections::{Collection, CollectionStats, Depot};
 use tables::AsTable;
 
@@ -27,9 +30,11 @@ fn main() {
                 let filename = subc_args
                     .value_of("file")
                     .expect("collection file is required");
-                let c =
-                    crate::yaml::load_collection_from_file(filename.to_owned())
-                        .expect("Unable to load collection");
+
+                let data_source = DataSource::new(filename);
+                let c = data_source
+                    .collection()
+                    .expect("Unable to load collection");
 
                 let table = c.to_table();
                 table.printstd();
@@ -42,9 +47,10 @@ fn main() {
                     .value_of("output-file")
                     .expect("Output file is required");
 
-                let c =
-                    crate::yaml::load_collection_from_file(filename.to_owned())
-                        .expect("Unable to load collection");
+                let data_source = DataSource::new(filename);
+                let c = data_source
+                    .collection()
+                    .expect("Unable to load collection");
 
                 write_collection_as_csv(c, output_filename)
                     .expect("Error during csv export");
@@ -53,9 +59,10 @@ fn main() {
                 let filename = subc_args
                     .value_of("file")
                     .expect("collection file is required");
-                let c =
-                    crate::yaml::load_collection_from_file(filename.to_owned())
-                        .expect("Unable to load collection");
+                let data_source = DataSource::new(filename);
+                let c = data_source
+                    .collection()
+                    .expect("Unable to load collection");
 
                 let stats = CollectionStats::from_collection(&c);
                 println!(
@@ -71,10 +78,10 @@ fn main() {
                 let filename = subc_args
                     .value_of("file")
                     .expect("collection file is required");
-                let c =
-                    crate::yaml::load_collection_from_file(filename.to_owned())
-                        .expect("Unable to load collection");
-
+                let data_source = DataSource::new(filename);
+                let c = data_source
+                    .collection()
+                    .expect("Unable to load collection");
                 let depot = Depot::from_collection(&c);
 
                 println!("{} locomotive(s)", depot.len());
@@ -84,35 +91,22 @@ fn main() {
             }
             _ => {}
         },
-        // ("migrate", Some(cmd_args)) => {
-        //     let filename = cmd_args
-        //     .value_of("file")
-        //     .expect("collection file is required");
-        //     let c = crate::yaml::parse_yaml_collection(filename.to_owned())
-        //         .expect("Unable to load collection");
+        ("wishlist", Some(cmd_args)) => match cmd_args.subcommand() {
+            ("list", Some(subc_args)) => {
+                let filename = subc_args
+                    .value_of("file")
+                    .expect("wishlist file is required");
 
-        //     let items = c.elements.iter().map(|it| {
-        //         YamlCollectionItem2 {
-        //             brand: it.brand.to_owned(),
-        //             item_number: it.item_number.to_owned(),
-        //             power_method: "DC".to_owned(),
-        //             count: it.count,
-        //             scale: "H0".to_owned(),
-        //             description: it.description.to_owned(),
-        //             rolling_stocks: it.rolling_stocks.clone(),
-        //             purchase_info: it.purchase_info.clone(),
-        //         }
-        //     });
+                let data_source = DataSource::new(filename);
+                let wish_list = data_source
+                    .wish_list()
+                    .expect("Unable to load the wishlist");
 
-        //     let c2 = YamlCollection2 {
-        //         description: c.description,
-        //         version: c.version,
-        //         modified_at: c.modified_at,
-        //         elements: items.collect::<Vec<YamlCollectionItem2>>(),
-        //     };
-
-        //     println!("{}", serde_yaml::to_string(&c2).unwrap());
-        // }
+                let table = wish_list.to_table();
+                table.printstd();
+            }
+            _ => {}
+        },
         _ => {}
     }
 }

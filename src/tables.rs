@@ -1,12 +1,50 @@
 use prettytable::{table, Table};
 use rust_decimal::prelude::*;
 
-use crate::domain::collecting::collections::{
-    Collection, CollectionStats, Depot, Year, YearlyCollectionStats,
+use crate::domain::collecting::{
+    collections::{
+        Collection, CollectionStats, Depot, Year, YearlyCollectionStats,
+    },
+    wish_lists::WishList,
 };
 
 pub trait AsTable {
     fn to_table(self) -> Table;
+}
+
+impl AsTable for WishList {
+    fn to_table(mut self) -> Table {
+        self.sort_items();
+
+        let mut table = Table::new();
+        table.add_row(row![
+            "#",
+            "Brand",
+            "Item number",
+            "Scale",
+            "PM",
+            "Cat.",
+            "Description",
+            "Count"
+        ]);
+
+        for (ind, it) in self.get_items().iter().enumerate() {
+            let ci = it.catalog_item();
+
+            table.add_row(row![
+                ind + 1,
+                b -> ci.brand().name(),
+                ci.item_number(),
+                ci.scale(),
+                ci.power_method(),
+                c -> ci.category(),
+                i -> substring(ci.description()),
+                r -> ci.count(),
+            ]);
+        }
+
+        table
+    }
 }
 
 impl AsTable for Depot {
@@ -99,7 +137,9 @@ impl AsTable for CollectionStats {
 }
 
 impl AsTable for Collection {
-    fn to_table(self) -> Table {
+    fn to_table(mut self) -> Table {
+        self.sort_items();
+
         let mut table = Table::new();
         table.add_row(row![
             "#",

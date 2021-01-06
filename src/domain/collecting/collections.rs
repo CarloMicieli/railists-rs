@@ -23,17 +23,16 @@ pub struct Collection {
 }
 
 impl Collection {
-    pub fn init_from_data(
+    pub fn new(
         description: &str,
         version: u8,
         modified_date: NaiveDateTime,
-        items: Vec<CollectionItem>,
     ) -> Self {
         Collection {
             description: description.to_owned(),
             version,
             modified_date,
-            items,
+            items: Vec::new(),
         }
     }
 
@@ -47,9 +46,13 @@ impl Collection {
         }
     }
 
-    pub fn add_item(&mut self, item: CollectionItem) {
-        self.items.push(item);
-        self.bump_version();
+    pub fn add_item(
+        &mut self,
+        catalog_item: CatalogItem,
+        purchased_info: PurchasedInfo,
+    ) {
+        let collection_item = CollectionItem::new(catalog_item, purchased_info);
+        self.items.push(collection_item);
     }
 
     /// Updates the modification fields (version and modified_date) for this collection.
@@ -72,6 +75,10 @@ impl Collection {
 
     pub fn get(&self, index: usize) -> Option<&CollectionItem> {
         self.items.get(index)
+    }
+
+    pub fn sort_items(&mut self) {
+        self.items.sort();
     }
 
     fn bump_version(&mut self) {

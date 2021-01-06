@@ -4,6 +4,7 @@ use std::str;
 use heck::ShoutySnakeCase;
 
 use itertools::Itertools;
+use thiserror::Error;
 
 use crate::domain::catalog::categories::{
     Category, FreightCarType, LocomotiveType, PassengerCarType, TrainType,
@@ -35,11 +36,11 @@ pub enum Epoch {
 }
 
 impl str::FromStr for Epoch {
-    type Err = &'static str;
+    type Err = EpochParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s.is_empty() {
-            return Err("Epoch value cannot be blank");
+            return Err(EpochParseError::BlankValue);
         }
 
         if s.contains("/") {
@@ -50,7 +51,7 @@ impl str::FromStr for Epoch {
                 let second = Epoch::parse_str(tokens[1])?;
                 Ok(Epoch::Multiple(Box::new(first), Box::new(second)))
             } else {
-                Err("Invalid number of elements for epoch values")
+                Err(EpochParseError::InvalidNumberOfValues)
             }
         } else {
             Epoch::parse_str(s)
@@ -58,9 +59,19 @@ impl str::FromStr for Epoch {
     }
 }
 
+#[derive(Error, Debug)]
+pub enum EpochParseError {
+    #[error("Epoch value cannot be blank")]
+    BlankValue,
+    #[error("Invalid number of elements for epoch values")]
+    InvalidNumberOfValues,
+    #[error("Invalid value for epoch")]
+    InvalidValue,
+}
+
 impl Epoch {
     // Helper method to parse just the simple value
-    fn parse_str(value: &str) -> Result<Self, &'static str> {
+    fn parse_str(value: &str) -> Result<Self, EpochParseError> {
         match value {
             "I" => Ok(Epoch::I),
             "II" => Ok(Epoch::II),
@@ -77,7 +88,7 @@ impl Epoch {
             "Vb" => Ok(Epoch::Vb),
             "Vm" => Ok(Epoch::Vm),
             "VI" => Ok(Epoch::VI),
-            _ => Err("Invalid value for epoch"),
+            _ => Err(EpochParseError::InvalidValue),
         }
     }
 }
