@@ -392,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "railists"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "bigdecimal",
@@ -404,6 +404,7 @@ dependencies = [
  "log",
  "pretty_env_logger",
  "prettytable-rs",
+ "rust_decimal",
  "serde",
  "serde_derive",
  "serde_yaml",
@@ -464,6 +465,16 @@ dependencies = [
  "blake2b_simd",
  "constant_time_eq",
  "crossbeam-utils",
+]
+
+[[package]]
+name = "rust_decimal"
+version = "1.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5c739ba050709eae138f053356d27ff818d71fe54ce5a8d9f4c7a660bfb6684"
+dependencies = [
+ "num-traits",
+ "serde",
 ]
 
 [[package]]

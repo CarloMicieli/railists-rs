@@ -7,6 +7,7 @@ use crate::domain::catalog::categories::{
     FreightCarType, LocomotiveType, PassengerCarType, TrainType,
 };
 use crate::domain::catalog::railways::Railway;
+use crate::domain::catalog::scales::Scale;
 use crate::domain::catalog::rolling_stocks::{
     Control, DccInterface, Epoch, LengthOverBuffer, RollingStock, ServiceLevel,
 };
@@ -131,7 +132,7 @@ fn to_collection(c: YamlCollection) -> Result<Collection, String> {
             elem.power_method
                 .parse::<PowerMethod>()
                 .expect("Invalid power method"),
-            elem.scale,
+            Scale::from_name(&elem.scale).unwrap(),
             elem.count,
         );
 

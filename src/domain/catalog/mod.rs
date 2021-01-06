@@ -5,3 +5,4 @@ pub mod catalog_items;
 pub mod categories;
 pub mod railways;
 pub mod rolling_stocks;
+pub mod scales;

@@ -4,7 +4,7 @@ use std::fmt;
 use std::str;
 
 use crate::domain::catalog::{
-    brands::Brand, categories::Category, rolling_stocks::RollingStock,
+    brands::Brand, categories::Category, rolling_stocks::RollingStock, scales::Scale
 };
 
 use super::rolling_stocks::Epoch;
@@ -74,7 +74,7 @@ pub struct CatalogItem {
     description: String,
     rolling_stocks: Vec<RollingStock>,
     category: Category,
-    scale: String,
+    scale: Scale,
     power_method: PowerMethod,
     count: u8,
 }
@@ -111,7 +111,7 @@ impl CatalogItem {
         description: String,
         rolling_stocks: Vec<RollingStock>,
         power_method: PowerMethod,
-        scale: String,
+        scale: Scale,
         count: u8,
     ) -> Self {
         let category = Self::extract_category(&rolling_stocks);
@@ -157,7 +157,7 @@ impl CatalogItem {
         &self.description
     }
 
-    pub fn scale(&self) -> &str {
+    pub fn scale(&self) -> &Scale {
         &self.scale
     }
 
