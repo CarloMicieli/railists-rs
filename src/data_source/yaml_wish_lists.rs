@@ -5,7 +5,7 @@ use crate::domain::{
         rolling_stocks::RollingStock,
         scales::Scale,
     },
-    collecting::wish_lists::{WishList, WishListItem},
+    collecting::wish_lists::{Priority, WishList, WishListItem},
 };
 
 use super::yaml_rolling_stocks::YamlRollingStock;
@@ -31,6 +31,7 @@ pub struct YamlWishListItem {
     #[serde(rename = "deliveryDate")]
     pub delivery_date: Option<String>,
     pub count: u8,
+    pub priority: Option<String>,
     #[serde(rename = "rollingStocks")]
     pub rolling_stocks: Vec<YamlRollingStock>,
 }
@@ -40,8 +41,14 @@ impl YamlWishList {
         let mut wish_list = WishList::new(&self.name, self.version);
 
         for item in self.elements {
+            let priority = if let Some(p) = item.priority.clone() {
+                p.parse::<Priority>()?
+            } else {
+                Default::default()
+            };
             let catalog_item = Self::parse_catalog_item(item)?;
-            wish_list.add_item(catalog_item);
+
+            wish_list.add_item(catalog_item, priority);
         }
 
         Ok(wish_list)

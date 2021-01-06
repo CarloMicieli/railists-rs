@@ -21,9 +21,10 @@ impl AsTable for WishList {
             "#",
             "Brand",
             "Item number",
+            "Cat.",
+            "Priority",
             "Scale",
             "PM",
-            "Cat.",
             "Description",
             "Count"
         ]);
@@ -35,9 +36,10 @@ impl AsTable for WishList {
                 ind + 1,
                 b -> ci.brand().name(),
                 ci.item_number(),
+                c -> ci.category(),
+                c -> it.priority().to_string(),
                 ci.scale(),
                 ci.power_method(),
-                c -> ci.category(),
                 i -> substring(ci.description()),
                 r -> ci.count(),
             ]);
