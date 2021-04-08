@@ -113,6 +113,8 @@ pub enum Control {
 
     /// The model has a dcc decoder installed with the sound module.
     DccSound,
+
+    DccFitted,
 }
 
 impl fmt::Display for Control {

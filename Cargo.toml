@@ -5,18 +5,18 @@ authors = ["CarloMicieli <piovarolo@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-anyhow = "1.0.37"
-thiserror = "1.0.23"
-serde = { version = "1.0.118", features = ["derive"] }
-serde_derive = "1.0.118"
+anyhow = "1.0.40"
+thiserror = "1.0.24"
+serde = { version = "1.0.125", features = ["derive"] }
+serde_derive = "1.0.125"
 serde_yaml = "0.8"
 clap = "2.33.3"
 pretty_env_logger = "0.4.0"
-log = "0.4.11"
+log = "0.4.14"
 prettytable-rs = "0.8.0"
-csv = "1.1.5"
+csv = "1.1.6"
 chrono = "0.4.19"
 itertools = "0.10.0"
 heck = "0.3.2"
-rust_decimal = "1.9.0"
+rust_decimal = "1.10.3"
 isocountry = "0.3.2"

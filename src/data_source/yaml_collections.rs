@@ -55,6 +55,7 @@ impl YamlCollection {
             "%Y-%m-%d %H:%M:%S",
         )
         .unwrap();
+
         let mut collection =
             Collection::new(&self.description, self.version, modified_date);
 
