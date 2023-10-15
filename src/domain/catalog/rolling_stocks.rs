@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str;
 
-use heck::ShoutySnakeCase;
+use heck::ToShoutySnakeCase;
 
 use itertools::Itertools;
 use thiserror::Error;
@@ -16,6 +16,7 @@ use crate::domain::catalog::railways::Railway;
 /// grouped together.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[allow(non_snake_case)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Epoch {
     I,
     II,
@@ -43,9 +44,9 @@ impl str::FromStr for Epoch {
             return Err(EpochParseError::BlankValue);
         }
 
-        if s.contains("/") {
+        if s.contains('/') {
             let tokens: Vec<&str> =
-                s.split_terminator("/").sorted().dedup().collect();
+                s.split_terminator('/').sorted().dedup().collect();
             if tokens.len() == 2 {
                 let first = Epoch::parse_str(tokens[0])?;
                 let second = Epoch::parse_str(tokens[1])?;
@@ -148,7 +149,7 @@ pub struct LengthOverBuffer(u32);
 impl LengthOverBuffer {
     /// Creates a new value, the provided value must be positive.
     pub fn new(value: u32) -> Self {
-        if value <= 0 {
+        if value == 0 {
             panic!("Length over buffer cannot be 0 or negative");
         }
         LengthOverBuffer(value)
@@ -199,6 +200,7 @@ impl fmt::Display for DccInterface {
 /// Values of service level can also include multiple service levels, like mixed first
 /// and second class.
 #[derive(Debug, PartialEq, Clone, Copy)]
+#[allow(clippy::enum_variant_names)]
 pub enum ServiceLevel {
     FirstClass,
     SecondClass,
@@ -258,9 +260,9 @@ impl str::FromStr for ServiceLevel {
         }
 
         let service_level;
-        if s.contains("/") {
+        if s.contains('/') {
             let tokens: Vec<&str> =
-                s.split_terminator("/").sorted().dedup().collect();
+                s.split_terminator('/').sorted().dedup().collect();
 
             if tokens.len() == 2 {
                 let first = tokens[0];
@@ -453,6 +455,7 @@ impl RollingStock {
     }
 
     /// Creates a new freight car rolling stock
+    #[allow(clippy::too_many_arguments)]
     pub fn new_freight_car(
         type_name: String,
         road_number: Option<String>,
@@ -476,6 +479,7 @@ impl RollingStock {
     }
 
     /// Creates a new train rolling stock
+    #[allow(clippy::too_many_arguments)]
     pub fn new_train(
         type_name: String,
         road_number: Option<String>,
@@ -505,6 +509,7 @@ impl RollingStock {
     }
 
     /// Creates a new locomotive rolling stock
+    #[allow(clippy::too_many_arguments)]
     pub fn new_locomotive(
         class_name: String,
         road_number: String,
@@ -534,6 +539,7 @@ impl RollingStock {
     }
 
     /// Creates a new passenger car rolling stock
+    #[allow(clippy::too_many_arguments)]
     pub fn new_passenger_car(
         type_name: String,
         road_number: Option<String>,

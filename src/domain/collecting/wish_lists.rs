@@ -93,9 +93,10 @@ impl cmp::Ord for WishListItem {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Hash, Default)]
 pub enum Priority {
     High,
+    #[default]
     Normal,
     Low,
 }
@@ -118,12 +119,6 @@ impl str::FromStr for Priority {
 impl fmt::Display for Priority {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
-    }
-}
-
-impl default::Default for Priority {
-    fn default() -> Self {
-        Priority::Normal
     }
 }
 

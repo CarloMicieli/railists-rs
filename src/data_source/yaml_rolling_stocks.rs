@@ -30,67 +30,73 @@ pub struct YamlRollingStock {
     pub dcc_interface: Option<String>,
 }
 
-impl YamlRollingStock {
-    pub fn to_rolling_stock(self) -> anyhow::Result<RollingStock> {
-        let length_over_buffer = self.length.map(|l| LengthOverBuffer::new(l));
-        let control = self.control.and_then(|c| c.parse::<Control>().ok());
-        let dcc_interface = self
+impl std::convert::TryFrom<YamlRollingStock> for RollingStock {
+    type Error = anyhow::Error;
+
+    fn try_from(value: YamlRollingStock) -> Result<Self, Self::Error> {
+        let length_over_buffer = value.length.map(LengthOverBuffer::new);
+        let control = value.control.and_then(|c| c.parse::<Control>().ok());
+        let dcc_interface = value
             .dcc_interface
             .and_then(|dcc| dcc.parse::<DccInterface>().ok());
 
-        let epoch = self.epoch.parse::<Epoch>()?;
+        let epoch = value.epoch.parse::<Epoch>()?;
 
-        match self.category.as_str() {
+        match value.category.as_str() {
             "LOCOMOTIVE" => Ok(RollingStock::new_locomotive(
-                self.type_name,
-                self.road_number.unwrap_or_default(),
-                self.series,
-                Railway::new(&self.railway),
+                value.type_name,
+                value.road_number.unwrap_or_default(),
+                value.series,
+                Railway::new(&value.railway),
                 epoch,
-                self.sub_category
+                value
+                    .sub_category
                     .and_then(|c| c.parse::<LocomotiveType>().ok())
                     .unwrap(),
-                self.depot,
-                self.livery,
+                value.depot,
+                value.livery,
                 length_over_buffer,
                 control,
                 dcc_interface,
             )),
             "TRAIN" => Ok(RollingStock::new_train(
-                self.type_name,
-                self.road_number,
+                value.type_name,
+                value.road_number,
                 1,
-                Railway::new(&self.railway),
+                Railway::new(&value.railway),
                 epoch,
-                self.sub_category.and_then(|c| c.parse::<TrainType>().ok()),
-                self.depot,
-                self.livery,
+                value.sub_category.and_then(|c| c.parse::<TrainType>().ok()),
+                value.depot,
+                value.livery,
                 length_over_buffer,
                 control,
                 dcc_interface,
             )),
             "PASSENGER_CAR" => Ok(RollingStock::new_passenger_car(
-                self.type_name,
-                self.road_number,
-                Railway::new(&self.railway),
+                value.type_name,
+                value.road_number,
+                Railway::new(&value.railway),
                 epoch,
-                self.sub_category
+                value
+                    .sub_category
                     .and_then(|c| c.parse::<PassengerCarType>().ok()),
-                self.service_level
+                value
+                    .service_level
                     .and_then(|sl| sl.parse::<ServiceLevel>().ok()),
-                self.depot,
-                self.livery,
+                value.depot,
+                value.livery,
                 length_over_buffer,
             )),
             "FREIGHT_CAR" => Ok(RollingStock::new_freight_car(
-                self.type_name,
-                self.road_number,
-                Railway::new(&self.railway),
+                value.type_name,
+                value.road_number,
+                Railway::new(&value.railway),
                 epoch,
-                self.sub_category
+                value
+                    .sub_category
                     .and_then(|c| c.parse::<FreightCarType>().ok()),
-                self.depot,
-                self.livery,
+                value.depot,
+                value.livery,
                 length_over_buffer,
             )),
             _ => Err(anyhow!("Invalid rolling stock type")),

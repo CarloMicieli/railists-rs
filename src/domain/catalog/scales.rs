@@ -96,7 +96,7 @@ impl fmt::Display for Scale {
 
 impl cmp::PartialEq for Scale {
     fn eq(&self, other: &Self) -> bool {
-        self.name() == &other.name
+        self.name() == other.name
     }
 }
 

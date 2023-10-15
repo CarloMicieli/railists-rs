@@ -6,6 +6,7 @@ use crate::domain::catalog::{catalog_items::ItemNumber, categories::Category};
 use chrono::{Datelike, NaiveDate, NaiveDateTime, Utc};
 use prettytable::Table;
 use rust_decimal::prelude::*;
+use std::fmt::Write;
 use std::{cmp, collections::HashMap, fmt, ops, str};
 
 use crate::domain::catalog::rolling_stocks::DccInterface;
@@ -97,8 +98,10 @@ impl fmt::Display for Collection {
             self.modified_date,
             self.items
                 .iter()
-                .map(|it| format!("\n  - {}", it))
-                .collect::<String>()
+                .fold(String::new(), |mut output, item| {
+                    let _ = write!(output, "\n  - {item}");
+                    output
+                })
         )
     }
 }
@@ -244,11 +247,11 @@ impl Depot {
             ci.rolling_stocks().iter().filter(|it| it.is_locomotive());
         for rs in locomotives {
             let card = DepotCard::new(
-                &rs.class_name().unwrap_or_default(),
-                &rs.road_number().unwrap_or_default(),
+                rs.class_name().unwrap_or_default(),
+                rs.road_number().unwrap_or_default(),
                 rs.series(),
                 rs.livery(),
-                &ci.brand().name(),
+                ci.brand().name(),
                 ci.item_number(),
                 rs.with_decoder(),
                 rs.dcc_interface(),
@@ -273,6 +276,7 @@ pub struct DepotCard {
 }
 
 impl DepotCard {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         class_name: &str,
         road_number: &str,
@@ -385,7 +389,7 @@ impl CollectionStats {
         }
 
         let size = collection.len();
-        let total_value: Price = Price::euro(totals.total_value.clone());
+        let total_value: Price = Price::euro(totals.total_value);
 
         CollectionStats {
             total_value: total_value.amount,
@@ -465,10 +469,10 @@ impl YearlyCollectionStats {
 
         YearlyCollectionStats {
             year,
-            locomotives: (0u8, zero.clone()),
-            passenger_cars: (0u8, zero.clone()),
-            freight_cars: (0u8, zero.clone()),
-            trains: (0u8, zero.clone()),
+            locomotives: (0u8, zero),
+            passenger_cars: (0u8, zero),
+            freight_cars: (0u8, zero),
+            trains: (0u8, zero),
             total: (0u8, zero),
         }
     }
@@ -548,7 +552,7 @@ impl YearlyCollectionStats {
         let (count, total_value) = &self.locomotives;
         self.locomotives = (
             count + item.catalog_item().count(),
-            total_value + item.purchased_at.price().amount.clone(),
+            total_value + item.purchased_at.price().amount,
         );
     }
 
@@ -556,7 +560,7 @@ impl YearlyCollectionStats {
         let (count, total_value) = &self.passenger_cars;
         self.passenger_cars = (
             count + item.catalog_item().count(),
-            total_value + item.purchased_at.price().amount.clone(),
+            total_value + item.purchased_at.price().amount,
         );
     }
 
@@ -564,7 +568,7 @@ impl YearlyCollectionStats {
         let (count, total_value) = &self.freight_cars;
         self.freight_cars = (
             count + item.catalog_item().count(),
-            total_value + item.purchased_at.price().amount.clone(),
+            total_value + item.purchased_at.price().amount,
         );
     }
 
@@ -572,7 +576,7 @@ impl YearlyCollectionStats {
         let (count, total_value) = &self.trains;
         self.trains = (
             count + item.catalog_item().count(),
-            total_value + item.purchased_at.price().amount.clone(),
+            total_value + item.purchased_at.price().amount,
         );
     }
 
@@ -580,7 +584,7 @@ impl YearlyCollectionStats {
         let (count, total_value) = &self.total;
         self.total = (
             count + item.catalog_item().count(),
-            total_value + item.purchased_at.price().amount.clone(),
+            total_value + item.purchased_at.price().amount,
         );
     }
 }

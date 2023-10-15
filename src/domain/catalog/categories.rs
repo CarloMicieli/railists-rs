@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str;
 
-use heck::ShoutySnakeCase;
+use heck::ToShoutySnakeCase;
 
 /// The enumeration of the model categories.
 #[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Clone, Copy)]
@@ -101,6 +101,7 @@ impl str::FromStr for FreightCarType {
 
 /// The different kinds of locomotives
 #[derive(Debug, PartialEq)]
+#[allow(clippy::enum_variant_names)]
 pub enum LocomotiveType {
     /// The steam locomotives category
     SteamLocomotive,

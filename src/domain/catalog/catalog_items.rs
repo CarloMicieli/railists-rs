@@ -76,7 +76,7 @@ impl DeliveryDate {
         let year = s
             .parse::<Year>()
             .map_err(|_| DeliveryDateParseError::InvalidYearValue)?;
-        if year < 1900 && year >= 2999 {
+        if !(1900..=2999).contains(&year) {
             return Err(DeliveryDateParseError::InvalidYearValue);
         }
 
@@ -91,7 +91,7 @@ impl DeliveryDate {
         let quarter = s[1..]
             .parse::<Quarter>()
             .map_err(|_| DeliveryDateParseError::InvalidQuarterValue)?;
-        if quarter < 1 && quarter >= 4 {
+        if !(1..=4).contains(&quarter) {
             return Err(DeliveryDateParseError::InvalidQuarterValue);
         }
 
@@ -107,8 +107,8 @@ impl str::FromStr for DeliveryDate {
             return Err(DeliveryDateParseError::EmptyValue);
         }
 
-        if s.contains("/") {
-            let tokens: Vec<&str> = s.split_terminator("/").collect();
+        if s.contains('/') {
+            let tokens: Vec<&str> = s.split_terminator('/').collect();
             if tokens.len() != 2 {
                 return Err(DeliveryDateParseError::InvalidByQuarterValue);
             }
@@ -133,6 +133,7 @@ impl fmt::Display for DeliveryDate {
 }
 
 #[derive(Debug, Error)]
+#[allow(clippy::enum_variant_names)]
 pub enum DeliveryDateParseError {
     #[error("Delivery date cannot be empty")]
     EmptyValue,
@@ -214,6 +215,7 @@ impl cmp::PartialOrd for CatalogItem {
 }
 
 impl CatalogItem {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         brand: Brand,
         item_number: ItemNumber,
@@ -280,7 +282,7 @@ impl CatalogItem {
         &self.delivery_date
     }
 
-    fn extract_category(rolling_stocks: &Vec<RollingStock>) -> Category {
+    fn extract_category(rolling_stocks: &[RollingStock]) -> Category {
         let categories = rolling_stocks
             .iter()
             .map(|rs| rs.category())
@@ -511,7 +513,7 @@ mod tests {
         #[test]
         fn it_should_check_whether_catalog_item_is_a_locomotive() {
             let item = new_locomotive_catalog_item();
-            assert!(true, item.is_locomotive());
+            assert!(item.is_locomotive());
         }
 
         #[test]

@@ -1,4 +1,5 @@
 use chrono::{NaiveDate, NaiveDateTime};
+use std::convert::TryFrom;
 
 use super::yaml_rolling_stocks::YamlRollingStock;
 use crate::domain::{
@@ -48,34 +49,39 @@ pub struct YamlPurchaseInfo {
     pub shop: String,
 }
 
-impl YamlCollection {
-    pub fn to_collection(self) -> anyhow::Result<Collection> {
+impl std::convert::TryFrom<YamlCollection> for Collection {
+    type Error = anyhow::Error;
+
+    fn try_from(value: YamlCollection) -> Result<Self, Self::Error> {
         let modified_date = NaiveDateTime::parse_from_str(
-            &self.modified_at,
+            &value.modified_at,
             "%Y-%m-%d %H:%M:%S",
         )
         .unwrap();
 
         let mut collection =
-            Collection::new(&self.description, self.version, modified_date);
+            Collection::new(&value.description, value.version, modified_date);
 
-        for item in self.elements {
-            let purchased_info =
-                Self::parse_purchase_info(item.purchase_info.clone())?;
-            let catalog_item = Self::parse_catalog_item(item)?;
+        for item in value.elements {
+            let purchased_info = YamlCollection::parse_purchase_info(
+                item.purchase_info.clone(),
+            )?;
+            let catalog_item = YamlCollection::parse_catalog_item(item)?;
 
             collection.add_item(catalog_item, purchased_info)
         }
 
         Ok(collection)
     }
+}
 
+impl YamlCollection {
     fn parse_catalog_item(
         elem: YamlCollectionItem,
     ) -> anyhow::Result<CatalogItem> {
         let mut rolling_stocks: Vec<RollingStock> = Vec::new();
         for rs in elem.rolling_stocks {
-            let rolling_stock = rs.to_rolling_stock()?;
+            let rolling_stock = RollingStock::try_from(rs)?;
             rolling_stocks.push(rolling_stock);
         }
 

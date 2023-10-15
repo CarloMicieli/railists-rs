@@ -15,7 +15,6 @@ mod data_source;
 mod domain;
 mod tables;
 
-use csv;
 use data_source::DataSource;
 use domain::collecting::{
     collections::{Collection, CollectionStats, Depot},
@@ -28,10 +27,10 @@ fn main() {
 
     let matches = cli::get_matches();
     match matches.subcommand() {
-        ("collection", Some(cmd_args)) => match cmd_args.subcommand() {
-            ("list", Some(subc_args)) => {
+        Some(("collection", cmd_args)) => match cmd_args.subcommand() {
+            Some(("list", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("collection file is required");
 
                 let data_source = DataSource::new(filename);
@@ -42,12 +41,12 @@ fn main() {
                 let table = c.to_table();
                 table.printstd();
             }
-            ("csv", Some(subc_args)) => {
+            Some(("csv", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("collection file is required");
                 let output_filename = subc_args
-                    .value_of("output-file")
+                    .get_one::<String>("output-file")
                     .expect("Output file is required");
 
                 let data_source = DataSource::new(filename);
@@ -58,9 +57,9 @@ fn main() {
                 write_collection_as_csv(c, output_filename)
                     .expect("Error during csv export");
             }
-            ("stats", Some(subc_args)) => {
+            Some(("stats", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("collection file is required");
                 let data_source = DataSource::new(filename);
                 let c = data_source
@@ -77,9 +76,9 @@ fn main() {
                 let table = stats.to_table();
                 table.printstd();
             }
-            ("depot", Some(subc_args)) => {
+            Some(("depot", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("collection file is required");
                 let data_source = DataSource::new(filename);
                 let c = data_source
@@ -94,10 +93,10 @@ fn main() {
             }
             _ => {}
         },
-        ("wishlist", Some(cmd_args)) => match cmd_args.subcommand() {
-            ("list", Some(subc_args)) => {
+        Some(("wishlist", cmd_args)) => match cmd_args.subcommand() {
+            Some(("list", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("wishlist file is required");
 
                 let data_source = DataSource::new(filename);
@@ -108,9 +107,9 @@ fn main() {
                 let table = wish_list.to_table();
                 table.printstd();
             }
-            ("budget", Some(subc_args)) => {
+            Some(("budget", subc_args)) => {
                 let filename = subc_args
-                    .value_of("file")
+                    .get_one::<String>("file")
                     .expect("wishlist file is required");
 
                 let data_source = DataSource::new(filename);
@@ -145,7 +144,7 @@ fn write_collection_as_csv(
 ) -> anyhow::Result<()> {
     let mut wtr = csv::Writer::from_path(output_file)?;
 
-    wtr.write_record(&[
+    wtr.write_record([
         "Brand",
         "ItemNumber",
         "Category",
@@ -161,7 +160,7 @@ fn write_collection_as_csv(
         let catalog_item = it.catalog_item();
         let purchase = it.purchased_info();
 
-        wtr.write_record(&[
+        wtr.write_record([
             catalog_item.brand().name(),
             catalog_item.item_number().value(),
             &catalog_item.category().to_string(),

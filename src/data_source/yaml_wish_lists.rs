@@ -10,6 +10,7 @@ use crate::domain::{
         Price,
     },
 };
+use std::convert::TryFrom;
 
 use super::yaml_rolling_stocks::YamlRollingStock;
 
@@ -47,11 +48,13 @@ pub struct YamlPrice {
     pub price: String,
 }
 
-impl YamlWishList {
-    pub fn to_wish_list(self) -> anyhow::Result<WishList> {
-        let mut wish_list = WishList::new(&self.name, self.version);
+impl std::convert::TryFrom<YamlWishList> for WishList {
+    type Error = anyhow::Error;
 
-        for item in self.elements {
+    fn try_from(value: YamlWishList) -> Result<Self, Self::Error> {
+        let mut wish_list = WishList::new(&value.name, value.version);
+
+        for item in value.elements {
             let mut prices: Vec<PriceInfo> = Vec::new();
 
             for p in item.prices.iter() {
@@ -65,20 +68,22 @@ impl YamlWishList {
             } else {
                 Default::default()
             };
-            let catalog_item = Self::parse_catalog_item(item)?;
+            let catalog_item = YamlWishList::parse_catalog_item(item)?;
 
             wish_list.add_item(catalog_item, priority, prices);
         }
 
         Ok(wish_list)
     }
+}
 
+impl YamlWishList {
     fn parse_catalog_item(
         elem: YamlWishListItem,
     ) -> anyhow::Result<CatalogItem> {
         let mut rolling_stocks: Vec<RollingStock> = Vec::new();
         for rs in elem.rolling_stocks {
-            let rolling_stock = rs.to_rolling_stock()?;
+            let rolling_stock = RollingStock::try_from(rs)?;
             rolling_stocks.push(rolling_stock);
         }
 

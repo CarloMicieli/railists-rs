@@ -31,7 +31,7 @@ impl str::FromStr for Price {
         let mut it = s.split_ascii_whitespace();
         let amount = it
             .next()
-            .map(|s| s.replace(",", "."))
+            .map(|s| s.replace(',', "."))
             .map(|amount| Decimal::from_str(&amount))
             .unwrap();
 

@@ -1,44 +1,42 @@
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::{command, Arg, ArgMatches, Command};
 
-pub fn get_matches() -> ArgMatches<'static> {
-    let file_arg = Arg::with_name("file")
-        .short("f")
+pub fn get_matches() -> ArgMatches {
+    let file_arg = Arg::new("file")
+        .short('f')
         .long("file")
-        .takes_value(true)
         .required(true)
         .value_name("file name")
         .help("The file name (required)");
 
-    let collection_ls_subcommand = SubCommand::with_name("list")
+    let collection_ls_subcommand = Command::new("list")
         .alias("l")
         .arg(file_arg.clone())
         .about("List the collection elements");
 
-    let collection_stats_subcommand = SubCommand::with_name("stats")
+    let collection_stats_subcommand = Command::new("stats")
         .alias("s")
         .arg(file_arg.clone())
         .about("Calculate the collection statistics");
 
-    let collection_depot_subcommand = SubCommand::with_name("depot")
+    let collection_depot_subcommand = Command::new("depot")
         .alias("d")
         .arg(file_arg.clone())
         .about("Extract the depot information for locomotives");
 
-    let collection_csv_subcommand = SubCommand::with_name("csv")
+    let collection_csv_subcommand = Command::new("csv")
         .alias("c")
         .arg(file_arg.clone())
         .arg(
-            Arg::with_name("output-file")
-                .short("o")
+            Arg::new("output-file")
+                .short('o')
                 .long("output")
-                .takes_value(true)
                 .required(true)
                 .value_name("file name")
                 .help("The output file name (required)"),
         )
         .about("Export the collection as csv file");
 
-    let collection_subcommand = SubCommand::with_name("collection")
+    let collection_subcommand = Command::new("collection")
         .alias("c")
         .subcommand(collection_ls_subcommand)
         .subcommand(collection_csv_subcommand)
@@ -46,17 +44,17 @@ pub fn get_matches() -> ArgMatches<'static> {
         .subcommand(collection_depot_subcommand)
         .about("Manage model railway collections");
 
-    let wishlist_ls_subcommand = SubCommand::with_name("list")
+    let wishlist_ls_subcommand = Command::new("list")
         .alias("l")
         .arg(file_arg.clone())
         .about("List the wishlist elements");
 
-    let wishlist_budget_subcommand = SubCommand::with_name("budget")
+    let wishlist_budget_subcommand = Command::new("budget")
         .alias("b")
         .arg(file_arg.clone())
         .about("Calculate the wishlist required budget");
 
-    let wishlist_subcommand = SubCommand::with_name("wishlist")
+    let wishlist_subcommand = Command::new("wishlist")
         .alias("w")
         .subcommand(wishlist_ls_subcommand)
         .subcommand(wishlist_budget_subcommand)
@@ -74,7 +72,7 @@ pub fn get_matches() -> ArgMatches<'static> {
     //     )
     //     .about("Migrate yaml file");
 
-    App::new("railists")
+    command!()
         .version(env!("CARGO_PKG_VERSION"))
         .about("Model railway collection manager")
         .author(env!("CARGO_PKG_AUTHORS"))

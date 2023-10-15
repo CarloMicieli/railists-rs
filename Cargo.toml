@@ -1,22 +1,22 @@
 [package]
 name = "railists"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["CarloMicieli <piovarolo@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-anyhow = "1.0.40"
-thiserror = "1.0.25"
-serde = { version = "1.0.126", features = ["derive"] }
-serde_derive = "1.0.126"
-serde_yaml = "0.8"
-clap = "2.33.3"
-pretty_env_logger = "0.4.0"
-log = "0.4.14"
-prettytable-rs = "0.8.0"
-csv = "1.1.6"
-chrono = "0.4.19"
-itertools = "0.10.0"
-heck = "0.3.3"
-rust_decimal = "1.14.1"
+anyhow = "1.0.75"
+thiserror = "1.0.49"
+serde = { version = "1.0.189", features = ["derive"] }
+serde_derive = "1.0.189"
+serde_yaml = "0.9.25"
+clap = { version = "4.4.6", features = ["cargo"] }
+pretty_env_logger = "0.5.0"
+log = "0.4.20"
+prettytable-rs = "0.10.0"
+csv = "1.3.0"
+chrono = "0.4.31"
+itertools = "0.11.0"
+heck = "0.4.1"
+rust_decimal = "1.32.0"
 isocountry = "0.3.2"
