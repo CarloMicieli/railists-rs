@@ -207,6 +207,7 @@ impl fmt::Display for PassengerCarType {
 pub enum TrainType {
     /// The railcar category
     Railcars,
+    PowerCars,
 
     /// The electric multiple unit category
     ElectricMultipleUnits,
@@ -228,6 +229,7 @@ impl str::FromStr for TrainType {
 
         match s {
             "RAILCARS" => Ok(TrainType::Railcars),
+            "POWER_CARS" => Ok(TrainType::PowerCars),
             "ELECTRIC_MULTIPLE_UNITS" => Ok(TrainType::ElectricMultipleUnits),
             "TRAIN_SETS" => Ok(TrainType::TrainSets),
             "STARTER_SETS" => Ok(TrainType::StarterSets),
